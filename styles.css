@@ -25,7 +25,7 @@ h1, h2, h3, p, figure, ol, ul, dl, dd { margin: 0; }
 .mast-inner, .nav, .brand, .social, .paper-links, .section-head, .foot { display: flex; align-items: center; }
 .mast-inner { min-height: 73px; justify-content: space-between; gap: 24px; }
 .brand { gap: 11px; font-size: 16px; font-weight: 650; letter-spacing: -.025em; }
-.mark { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px 8px 8px 2px; background: var(--ink); color: #efe7ff; font: italic bold 23px/.9 Georgia, serif; letter-spacing: -.12em; padding-right: 4px; padding-bottom: 2px; }
+.mark { flex: none; width: 36px; height: 36px; object-fit: contain; border-radius: 8px 8px 8px 2px; background: #1c2030; }
 .nav { gap: clamp(16px, 2.5vw, 37px); font-size: 14px; font-weight: 550; }
 .nav .lang { padding-left: 20px; border-left: 1px solid #c8c4d1; }
 .hero {
@@ -186,7 +186,7 @@ html:lang(zh) h2 { letter-spacing: -.035em; }
     --line: #383442;
     --paper: #19181e;
   }
-  .mark, .social .primary { background: #e8dcff; color: #251b35; }
+  .social .primary { background: #e8dcff; color: #251b35; }
   .social .primary:hover { background: #cdb1ff; }
   .bio, .paper-summary { color: #cecbd6; }
   .thumb { border-color: #46424e; }
