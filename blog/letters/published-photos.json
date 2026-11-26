@@ -2,7 +2,7 @@
 layout: null
 sitemap: false
 ---
-{% assign albums = "portraits,days" | split: "," %}
+{% assign albums = "portraits,days,our_dogs" | split: "," %}
 {% assign formats = ".jpg,.jpeg,.png,.gif,.webp,.avif" | split: "," %}
 {
 {% for album in albums %}

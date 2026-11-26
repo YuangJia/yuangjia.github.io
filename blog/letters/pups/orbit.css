@@ -1,0 +1,63 @@
+.pup-orbit {
+  width: min(620px, calc(100% - 24px));
+  max-height: 95vh;
+  max-height: 95dvh;
+  max-width: none;
+  margin: auto; padding: clamp(16px, 3vw, 28px); overflow: auto;
+  border: 1px solid #e7dfd8; border-radius: 22px;
+  color: #364b5f; background: #fffcf8; box-shadow: 0 18px 75px #4e5d7138;
+}
+.pup-orbit::backdrop { background: #53627950; }
+.pup-orbit-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pup-orbit-header h3 { margin: 0; color: #455666; font: 500 clamp(24px,4vw,37px)/1.2 var(--serif, Georgia, serif); }
+.pup-orbit-header button, .pup-orbit-actions button {
+  appearance: none; min-height: 42px; padding: 7px 15px;
+  border: 1px solid #d9e1e2; border-radius: 16px;
+  color: #42596a; background: #fffdfa; font: inherit; font-size: 15px; cursor: pointer;
+}
+.pup-orbit button:disabled { opacity: .43; cursor: default; }
+.pup-orbit button:focus-visible { outline: 2px solid #527186; outline-offset: -3px; }
+.pup-orbit-stage {
+  position: relative; isolation: isolate; display: block; appearance: none;
+  width: 100%; margin-top: 13px; padding: 0;
+  height: clamp(220px, 51vh, 455px); height: clamp(220px, 51dvh, 455px);
+  overflow: hidden; border: 0; border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 6% 4%, #c5e5f1 0, transparent 56%),
+    radial-gradient(ellipse at 97% 85%, #ffd5c2 0, transparent 57%), #f4eee7;
+  cursor: grab; touch-action: pan-y pinch-zoom; user-select: none;
+}
+.pup-orbit-stage:active { cursor: grabbing; }
+.pup-orbit-frames { display: block; position: absolute; inset: 2% 4%; }
+.pup-orbit-portrait {
+  position: absolute; inset: 0; display: block; width: 100%; height: 100%;
+  object-fit: contain; opacity: 0; pointer-events: none;
+  transition: opacity 185ms ease-in-out;
+}
+.pup-orbit-portrait.in-view { opacity: 1; }
+.pup-orbit-heart {
+  position: absolute; top: 19%; left: 66%; opacity: 0; line-height: 1;
+  font: 26px Georgia,serif; color: #d36372; text-shadow: 0 1px 1px white; pointer-events: none;
+}
+.pup-orbit-stage.is-petted .pup-orbit-heart { opacity: 1; }
+.pup-orbit-hint { margin: 8px 0 0; color: #5a6970; font-size: 14px; text-align: center; }
+.pup-orbit-actions { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 12px; }
+.pup-orbit-caption { display: block; min-width: 3em; text-align: center; font: 500 16px var(--serif, Georgia, serif); }
+@media (hover:hover) { .pup-orbit-actions button:enabled:hover, .pup-orbit-header button:hover { background: #f5efe6; } }
+@media (prefers-reduced-motion: no-preference) {
+  .pup-orbit-stage.is-petted .pup-orbit-frames { animation: pup-orbit-nuzzle 480ms ease-out; }
+  .pup-orbit-stage.is-petted .pup-orbit-heart { animation: pup-orbit-love 600ms ease-out forwards; }
+}
+@keyframes pup-orbit-nuzzle {
+  32% { transform: translateY(-2%) rotate(-2deg); } 70% { transform: rotate(1deg); }
+}
+@keyframes pup-orbit-love {
+  0% { opacity: 0; transform: translateY(5px) scale(.6); }
+  25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-22px) scale(1.15); }
+}
+@media (prefers-reduced-motion: reduce) { .pup-orbit-portrait { transition: none; } }
+@media (max-height: 480px) {
+  .pup-orbit { padding: 10px 16px; }
+  .pup-orbit-stage { height: 47vh; min-height: 120px; margin-top: 4px; }
+  .pup-orbit-hint, .pup-orbit-actions { margin-top: 4px; }
+}

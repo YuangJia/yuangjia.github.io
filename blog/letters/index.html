@@ -10,12 +10,17 @@
   <link rel="stylesheet" href="letters.css">
   <link rel="stylesheet" href="gallery.css">
   <link rel="stylesheet" href="gallery-controls.css">
+  <link rel="stylesheet" href="pups/pups.css">
+  <link rel="stylesheet" href="pups/orbit.css">
   <script src="entries.js" defer></script>
   <script src="photo-index.js" defer></script>
   <script src="portrait-previews.js" defer></script>
   <script src="diary.js" defer></script>
   <script src="gallery.js" defer></script>
   <script src="hearts.js" defer></script>
+  <script src="pups/album.js" defer></script>
+  <script src="pups/orbit.js" defer></script>
+  <script src="pups/pups.js" defer></script>
 </head>
 <body>
   <header class="mast">
@@ -41,6 +46,29 @@
           <h2 id="days-title">我与 <i lang="en">fanfan</i> 的幸福日常</h2>
           <span class="open-book">翻开年册</span>
         </a>
+      </section>
+      <section class="pup-studio" id="pups" aria-labelledby="pups-title" hidden>
+        <header class="pup-header">
+          <h2 id="pups-title">我们的可爱小狗们</h2>
+          <p>轻点小狗，摸摸它</p>
+        </header>
+        <div class="pup-lineup" id="pup-lineup"></div>
+        <span id="pup-reaction" role="status" class="pup-visually-hidden"></span>
+        <dialog class="pup-album" id="pup-album" aria-labelledby="pup-album-title">
+          <header class="pup-album-head">
+            <h3 id="pup-album-title"></h3>
+            <button type="button" class="pup-close" aria-label="关闭相册" autofocus>×</button>
+          </header>
+          <div class="pup-photo-stage">
+            <img class="pup-photo" alt="">
+            <button type="button" class="pup-edge pup-prev" aria-label="上一张照片"></button>
+            <button type="button" class="pup-edge pup-next" aria-label="下一张照片"></button>
+          </div>
+          <footer class="pup-album-foot">
+            <span class="pup-count" aria-live="polite" aria-atomic="true"></span>
+            <a class="pup-original" target="_blank" rel="noopener">查看原图</a>
+          </footer>
+        </dialog>
       </section>
       <section id="portraits" aria-labelledby="portraits-title">
         <h2 id="portraits-title"><i lang="en">fanfan</i> 的美照</h2>

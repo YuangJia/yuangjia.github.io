@@ -92,5 +92,11 @@
     return records;
   }
 
-  window.lettersData = { load };
+  async function listDogFiles() {
+    listing ||= getListing();
+    const files = (await listing).our_dogs;
+    return Array.isArray(files) ? files.filter(validFile) : null;
+  }
+
+  window.lettersData = { load, listDogFiles };
 })();
