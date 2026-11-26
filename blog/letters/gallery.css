@@ -1,0 +1,385 @@
+#portrait-list {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(32px, 4.4vw, 72px) clamp(18px, 2.5vw, 40px);
+  align-items: start;
+}
+#portrait-list > .empty, .fg-album { grid-column: 1 / -1; }
+.fg-album {
+  --fg-edge-ink: #403647;
+  min-width: 0;
+  color: #624e50;
+}
+.fg-stage {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  touch-action: pan-y;
+}
+.fg-album button, .fg-viewer button {
+  appearance: none;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.fg-album button:focus-visible, .fg-viewer button:focus-visible {
+  outline: 2px solid #785777;
+  outline-offset: 2px;
+}
+.fg-stage img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
+.fg-stage .fg-print { position: absolute; display: block; padding: 0; }
+.fg-stage .fg-print.fg-outside { opacity: 0; pointer-events: none; }
+.fg-stage .fg-main-print, .fg-contact-thumb, .fg-facing {
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.fg-info { padding-top: 5px; }
+.fg-controls { display: flex; align-items: center; }
+.fg-caption { font: 15px/1.65 var(--serif); white-space: pre-line; overflow-wrap: anywhere; }
+.fg-caption:empty { display: none; }
+.fg-count, .fg-view-count { font: 500 12px/1.5 "Courier Prime", Consolas, monospace; white-space: nowrap; }
+
+/* Translucent amber filmstock on a light table, with a sprocket hole on each pitch. */
+.fg-reel { --fg-edge-ink: #fff9ec; }
+.fg-reel .fg-stage {
+  --margin: clamp(24px, 2.6vw, 36px);
+  height: clamp(368px, 44vw, 616px);
+  background:
+    linear-gradient(101deg, #db9a5e, #f5d4a4 29%, #fbe0ad 48%, #e8b57e 71%, #f6d7a7);
+  border-block: 1px solid #c89868;
+  box-shadow: 0 3px 0 #f5dfc2, 0 18px 26px -24px #986132;
+}
+.fg-reel .fg-stage::before, .fg-reel .fg-stage::after {
+  content: "";
+  position: absolute;
+  z-index: 7;
+  left: 0;
+  right: 0;
+  height: var(--margin);
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='18' viewBox='0 0 42 18'%3E%3Crect x='11' y='3' width='18' height='11' rx='3' fill='%23a77e5d'/%3E%3Crect x='11' y='4.5' width='18' height='10' rx='2.7' fill='%23fffaef'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(100deg, #fff7 0, #fff0 1px, #fff0 6px);
+  background-position: 0 center;
+  background-repeat: repeat-x, repeat;
+}
+.fg-reel .fg-stage::before { top: 0; border-bottom: 1px solid #b8814e; }
+.fg-reel .fg-stage::after { bottom: 0; border-top: 1px solid #ba8654; }
+.fg-film-strip { position: absolute; inset: 0; --pitch-gap: 9px; }
+.fg-film-strip .fg-print {
+  width: 36%;
+  height: calc(100% - var(--margin) * 2);
+  top: var(--margin);
+  left: 50%;
+  overflow: hidden;
+  transform: translateX(calc(-50% + var(--slot) * (100% + var(--pitch-gap))));
+  background: #eed5ac;
+  box-shadow: 0 0 0 2px #775f51;
+}
+.fg-film-strip .fg-print::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(104deg, #53392638, #dfae8032 70%, #61432a36);
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+.fg-film-strip .fg-active::after { opacity: 0; }
+
+/* Instant photographs, taped by hand, loosely scattered on pearl-pink satin. */
+.fg-prints { grid-column: span 5; --fg-edge-ink: #793b55; }
+.fg-prints, .fg-fan, .fg-book, .fg-dusk { --fg-edge-shadow: #fff8eecc; }
+.fg-prints .fg-stage, .fg-contact .fg-stage { height: clamp(390px, 43vw, 620px); }
+.fg-prints .fg-stage {
+  background: #f6dfe1 url("pearl-silk.webp") center / cover no-repeat;
+  box-shadow: inset 0 0 0 1px #ffeef077, 0 15px 30px -25px #a28182;
+}
+.fg-prints .fg-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 42% 50%, #fffdf336 5%, transparent 60%),
+              linear-gradient(125deg, #ffe7e259, transparent 37%, transparent 70%, #ffd6e019);
+}
+.fg-prints .fg-print {
+  left: 51%;
+  top: 49%;
+  width: min(51%, 365px);
+  aspect-ratio: .738;
+  border: clamp(7px, .75vw, 12px) solid #fffaf2;
+  border-bottom-width: clamp(26px, 2.8vw, 42px);
+  background: #fffbf4;
+  box-shadow: 0 2px 2px #734a5325, 0 12px 17px -6px #79556364;
+  transform: translate(-50%, -50%) translate(calc(var(--offset) * 16%), calc(var(--depth) * 4%))
+             rotate(calc(-4deg + var(--offset) * 9deg)) scale(calc(1 - var(--depth) * .035));
+  transition: transform 470ms cubic-bezier(.19,.76,.21,1), opacity 230ms ease;
+}
+.fg-prints .fg-print::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  width: 23%;
+  height: 5.5%;
+  left: 41%;
+  top: -4%;
+  transform: rotate(5deg);
+  background: repeating-linear-gradient(92deg, #ffe7beab 0 2px, #fff0cfb3 3px 4px);
+  clip-path: polygon(1% 2%, 100% 0, 98% 21%, 100% 37%, 98% 61%, 99% 79%, 97% 100%, 0 98%, 2% 76%, 0 51%, 2% 34%);
+}
+
+/* Two moving photographs on a lavender stationery spread, with a selectable proof strip. */
+.fg-contact {
+  grid-column: span 7;
+  --fg-proof-rail: clamp(62px, 6.8vw, 92px);
+  --fg-edge-ink: #374963;
+  --fg-edge-shadow: #fff;
+}
+.fg-contact .fg-stage {
+  position: relative;
+  display: grid;
+  grid-template: minmax(0, 1fr) var(--fg-proof-rail) / 1.65fr 1fr;
+  gap: 0 clamp(8px, 1vw, 16px);
+  padding: clamp(12px, 2.25vw, 34px) clamp(13px, 2.7vw, 43px) 10px;
+  border: 1px solid #cccddb;
+  background:
+    linear-gradient(120deg, transparent 48%, #fff9 49%, #fff3 62%, transparent 68%),
+    linear-gradient(120deg, #dceafe, #eff4fc 38%, #ffeaf0 75%, #fee0cf);
+  box-shadow: 0 13px 23px -21px #637996;
+}
+.fg-contact .fg-stage::before {
+  content: ""; position: absolute; right: 0; bottom: 0; width: 42%; height: 74%; pointer-events: none;
+  opacity:.7; background-color: #fff1eb;
+  background-image: repeating-linear-gradient(90deg, transparent 0 8px, #e7c4cc55 8px 13px),
+                    repeating-linear-gradient(0deg, transparent 0 8px, #e7c4cc55 8px 13px);
+  clip-path: polygon(10% 0,100% 9%,100% 100%,0 100%);
+}
+.fg-contact .fg-main-print, .fg-contact .fg-companion {
+  min-width: 0; min-height: 0; overflow:hidden; position:relative;
+  align-self: center; width: 100%; height: 92%; padding:4px; background: #fffcf6;
+  box-shadow: 0 5px 12px -5px #626b8273;
+}
+.fg-contact .fg-main-print { transform: rotate(-1.8deg); }
+.fg-contact .fg-main-print:only-of-type { grid-column: 1/-1; max-width: 66%; justify-self: center; }
+.fg-contact .fg-companion {
+  height:61%; padding: 5px 5px clamp(11px, 2vw, 22px); transform: translateY(7%) rotate(5deg);
+}
+.fg-contact .fg-companion::after {
+  content:""; position:absolute; left:36%; top:-1px; width:30%; height: 9px;
+  background:repeating-linear-gradient(91deg,#e3d6f6c2 0 3px,#f7eaf9d9 3px 6px); pointer-events:none;
+}
+.fg-contact .fg-main-print img, .fg-contact .fg-companion img { object-position:50% 45%; }
+.fg-contact-rail {
+  z-index:1; grid-column:1/-1; display:flex; justify-content:safe center; gap:clamp(4px,.6vw,9px);
+  padding:8px 0 0; overflow-x:auto; overscroll-behavior-x:contain; scrollbar-width:thin;
+  scrollbar-color: #aab9ca transparent;
+}
+.fg-contact .fg-contact-thumb {
+  position:relative; flex:0 0 clamp(44px,12%,85px); height:100%; min-width:44px; padding:2px;
+  background:#fffaf4; opacity:.7; transition:opacity .2s, transform .2s;
+}
+.fg-contact .fg-contact-thumb[aria-pressed="true"], .fg-contact .fg-contact-thumb:hover {
+  opacity:1; box-shadow: inset 0 0 0 2px #5d7395;
+}
+
+/* An apricot-lit stage; individual gilded prints pivot around one invisible hinge. */
+.fg-fan { --fg-edge-ink: #844a30; --fan-height: clamp(388px, 42vw, 610px); }
+.fg-fan .fg-stage {
+  height: var(--fan-height);
+  background: #f9d3b8 url("peach-stage.webp") center / cover no-repeat;
+  box-shadow: 0 18px 35px -31px #aa744b;
+}
+.fg-fan .fg-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 14%, #fff8df55, transparent 56%);
+  pointer-events: none;
+}
+.fg-fan .fg-print {
+  top: 9%;
+  left: 50%;
+  width: min(27%, 320px);
+  height: 80%;
+  padding: 3px;
+  border: 4px solid #fff7e6;
+  outline: 1px solid #cda66e;
+  border-radius: 2px;
+  background: linear-gradient(130deg, #a9763a, #fff3c9 18%, #ddaf68 39%, #fff9da 68%, #bd8b53);
+  box-shadow: 0 12px 23px -7px #9d674d7d;
+  transform-origin: center 107%;
+  transform: translateX(calc(-50% + var(--offset) * 44%)) rotate(calc(var(--offset) * 10deg))
+             scale(calc(1 - var(--depth) * .057));
+  transition: transform 480ms cubic-bezier(.18,.72,.16,1), opacity 230ms ease;
+}
+.fg-fan .fg-print img { object-position: 50% 38%; }
+.fg-fan .fg-active:has(img.fg-landscape) {
+  width: min(61%, calc(var(--fan-height) * .95));
+  height: auto;
+  aspect-ratio: 4 / 3;
+  top: 49%;
+  transform: translate(-50%, -50%);
+}
+.fg-fan .fg-active img.fg-landscape { object-fit: contain; background: #fff6e9; }
+
+/* Mint book cloth, a gilt rule, and the two facing leaves of an ivory photo album. */
+.fg-book { --fg-edge-ink: #396860; }
+.fg-book .fg-stage {
+  --leaf-edge: 7%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  align-items: center;
+  justify-items: center;
+  height: clamp(410px, 44vw, 615px);
+  padding: 0 var(--leaf-edge);
+  border: 1px solid #a6c2b8;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(4deg, #faf7dd31 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(89deg, #54877b20 0 1px, transparent 1px 3px),
+    linear-gradient(110deg, #d6e6cf, #c3dfd5 33%, #daece1 68%, #b8d3cd);
+  box-shadow: inset 0 0 0 4px #d0e3d6, inset 0 0 0 5px #e7d4a8, inset 0 0 0 6px #c9ad7c,
+              0 16px 27px -24px #427069;
+  perspective: 1100px;
+}
+.fg-book .fg-stage::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 5.8% var(--leaf-edge) 6.8%;
+  border-radius: 3% 2% 2% 1% / 2% 3% 3% 2%;
+  border: 1px solid #d0c4a5;
+  background:
+    linear-gradient(90deg, #eee5c9, #f9f5e3 6%, #fff9e9 27%, #f9f3e1 44%,
+                           #e1d9c1 49.3%, #c7bfa5 49.9%, #f9f2df 50.15%, #f1ead4 52%,
+                           #fff9e8 64%, #f9f5e4 91%, #ede3c8);
+  box-shadow: 0 2px #eee8d1, 0 3px #cabb9f, 0 5px #f2ebd5, 0 6px #ccbfa5, 0 8px #f1ead3, 0 10px 11px #5b70634d;
+}
+.fg-book .fg-main-print, .fg-book .fg-facing {
+  position: relative;
+  width: 84%;
+  height: 76%;
+  backface-visibility: hidden;
+  background: transparent;
+}
+.fg-book .fg-main-print { transform-origin: right center; }
+.fg-book .fg-facing { transform-origin: left center; }
+.fg-book .fg-main-print:only-child { grid-column: 1 / -1; }
+.fg-book .fg-stage img { object-fit: contain; filter: drop-shadow(0 3px 3px #6a624447); }
+.fg-book .fg-stage::after {
+  content: "";
+  position: absolute;
+  right: 12%;
+  bottom: 4%;
+  height: 6%;
+  width: clamp(12px, 1.4vw, 23px);
+  pointer-events: none;
+  background: linear-gradient(90deg, #e2b298, #f2cbb7 15%, #e7b59c 80%, #d5a688);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 73%, 0 100%);
+}
+
+/* Three real prints trade places on a sky-blue hanging display. */
+.fg-dusk { --fg-edge-ink: #3c576b; --frame-space: 86%; }
+.fg-dusk .fg-stage {
+  height:clamp(410px,45vw,650px);
+  background:
+    radial-gradient(ellipse at 86% 16%, #ffe5bcba, transparent 46%),
+    linear-gradient(122deg, #c4e5f2 0%, #e4f2fc 31%, #f7e7ee 75%, #fbdac7);
+  box-shadow: inset 0 0 0 1px #bbcfdc, 0 12px 28px -24px #6a8c9d;
+}
+.fg-dusk .fg-stage::before {
+  content:""; pointer-events:none; position:absolute; inset:0;
+  background: repeating-linear-gradient(114deg, transparent 0 17%, #fff4 18%, #fff7 21%, transparent 24% 40%);
+  background-size: 118% 100%;
+}
+.fg-dusk .fg-stage::after {
+  content:""; pointer-events:none; position:absolute; left:-2%; right:-2%; top:8%; height:32%;
+  border-top:1px solid #ad8f7885;
+  transform: rotate(-3deg); box-shadow: 0 -1px 0 #fffb; border-radius:50%;
+}
+.fg-dusk .fg-print {
+  --angle: calc(var(--offset) * 6deg);
+  left:50%; top:50%; width: min(36%, 476px); height:87%;
+  border:clamp(4px,.6vw,9px) solid #fffdfa; border-bottom-width:clamp(10px,1.3vw,20px);
+  background: #faf9f5;
+  box-shadow: 0 5px 8px -5px #65758677, 0 15px 20px -13px #55758a80;
+  transform: translate(-50%, -50%) translateX(calc(var(--offset) * var(--frame-space))) translateY(calc(var(--depth) * 3%))
+             rotate(var(--angle)) scale(calc(1 - var(--depth) * .23));
+  transition: transform 490ms cubic-bezier(.21,.78,.2,1), opacity 380ms ease;
+}
+.fg-dusk .fg-print img { object-position: 50% 46%; }
+.fg-dusk .fg-print::before {
+  content:""; position:absolute; z-index:1; left:calc(50% - 15px); top:-13px; width:30px; height:17px;
+  border:1px solid #93a7b0; border-radius:4px;
+  background:linear-gradient(#e6edf0, #a4bcc9 40%, #eaf2f4 58%, #d4e1e6);
+  box-shadow:0 2px 2px #6377854a; pointer-events:none;
+}
+.fg-dusk .fg-outside { visibility:hidden; }
+@keyframes fg-windowlight { to { background-position:100% 50%; } }
+@keyframes fg-warmth { to { opacity:.22; } }
+@keyframes fg-breathe { to { scale:1.038; } }
+@media(prefers-reduced-motion:no-preference) {
+  .fg-dusk .fg-stage::before { animation: fg-windowlight 12s ease-in-out infinite alternate paused; }
+  .fg-fan .fg-stage::before, .fg-prints .fg-stage::before { animation: fg-warmth 5s ease-in-out infinite alternate paused; }
+  .fg-contact .fg-main-print img { animation: fg-breathe var(--fg-duration) ease-in-out infinite alternate paused; }
+  .fg-running .fg-stage::before, .fg-running.fg-contact .fg-main-print img { animation-play-state:running; }
+}
+
+.fg-viewer {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: clamp(12px, 3vh, 30px) 14px;
+  overflow: hidden;
+  border: none;
+  background: linear-gradient(120deg, #e6f3fb, #f8f5ef 52%, #f8e5ec);
+  color: #534659;
+}
+.fg-viewer[open] { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+.fg-viewer::backdrop { background: #e6e7ec; }
+.fg-viewer figure { display: flex; flex: 0 1 auto; flex-direction: column; align-items: center; min-height: 0; margin: 0; }
+.fg-viewer img { display: block; width: auto; height: auto; max-width: 100%; max-height: calc(100dvh - 116px); object-fit: contain; }
+.fg-viewer figcaption { max-width: 70ch; max-height: 10vh; overflow: auto; text-align: center; font-size: 14px; }
+.fg-viewer figcaption:not(:empty) { margin-top: 5px; }
+
+@media(max-width: 800px) {
+  .fg-prints, .fg-contact { grid-column: 1 / -1; }
+  .fg-prints .fg-stage, .fg-contact .fg-stage { height: clamp(400px, 89vw, 575px); }
+  .fg-prints .fg-print { width: min(55%, 300px); }
+  .fg-fan .fg-print { width: 35%; }
+}
+@media(max-width: 580px) {
+  .fg-reel .fg-stage { --margin: 23px; height: clamp(310px, 93vw, 460px); }
+  .fg-film-strip { --pitch-gap: 7px; }
+  .fg-film-strip .fg-print { width: 69%; }
+  .fg-contact { --fg-proof-rail: 76px; }
+  .fg-prints .fg-stage, .fg-contact .fg-stage { height: clamp(345px, 108vw, 495px); }
+  .fg-prints .fg-stage { background-position: 54% center; }
+  .fg-prints .fg-print { width: min(60%, 280px); }
+  .fg-fan { --fan-height: clamp(290px, 85vw, 395px); }
+  .fg-fan .fg-print { top: 13%; width: 44%; height: 73%; transform-origin: center 114%; }
+  .fg-book .fg-stage { --leaf-edge: 4%; height: clamp(250px, 73vw, 355px); }
+  .fg-book .fg-stage::before { inset-block: 6% 8%; }
+  .fg-book .fg-main-print, .fg-book .fg-facing { width: 90%; height: 73%; }
+  .fg-book .fg-stage img { filter: none; }
+  .fg-dusk { --frame-space: 83%; }
+  .fg-dusk .fg-stage { height: clamp(304px, 89vw, 460px); }
+  .fg-dusk .fg-print { width: 63%; height: 82%; }
+  .fg-contact .fg-stage { padding: 12px 15px 8px; }
+  .fg-contact .fg-main-print { height: 87%; }
+  .fg-contact .fg-companion { height: 56%; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .fg-stage *, .fg-viewer * { transition: none !important; animation: none !important; }
+}

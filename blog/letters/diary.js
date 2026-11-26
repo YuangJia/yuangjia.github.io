@@ -1,107 +1,96 @@
 (() => {
-  const entries = window.fanfanLetters || {};
-  const supportedImage = /\.(?:avif|gif|jpe?g|png|webp)$/i;
+  const base = new URL(".", document.currentScript.src);
+  const fallback = window.lettersPhotoIndex || { portraits: [], days: [] };
+  const notes = window.fanfanLetters || {};
+  const supported = /\.(?:avif|gif|jpe?g|png|webp)$/i;
+  let listing;
 
-  function imagePath(section, file) {
-    if (typeof file !== "string" || !supportedImage.test(file)) return "";
-    const parts = file.split("/");
-    if (parts.some(part => !part || part === "." || part === ".." || part.includes("\\"))) return "";
-    return "photos/" + section + "/" + parts.map(encodeURIComponent).join("/");
+  function validFile(file) {
+    return typeof file === "string" && supported.test(file)
+      && file.split("/").every(p => p && p !== "." && p !== ".." && !p.includes("\\"));
   }
 
-  function entryDate(record) {
-    const dateInName = typeof record.file === "string"
-      && record.file.split("/").pop().match(/^(\d{4}-\d{2}-\d{2})(?!\d)/);
-    const date = record.date || (dateInName && dateInName[1]);
-    if (typeof date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return "";
-    const timestamp = Date.parse(date);
-    return Number.isFinite(timestamp) && new Date(timestamp).toISOString().startsWith(date) ? date : "";
-  }
-
-  function openAlbum(section, selector) {
-    const list = document.querySelector(selector);
-    if (!list) return () => {};
-    const placeholder = Array.from(list.childNodes);
-    const seen = new Set();
-    const portrait = section === "portraits";
-
-    return function append(records) {
-      if (!Array.isArray(records)) return;
-      const cards = document.createDocumentFragment();
-      for (const item of records) {
-        if (!item || typeof item !== "object") continue;
-        const src = imagePath(section, item.file);
-        const caption = typeof item.caption === "string" ? item.caption.trim() : "";
-        if ((!src && (portrait || !caption)) || (src && seen.has(src))) continue;
-
-        const card = document.createElement(portrait ? "figure" : "article");
-        card.className = "memory";
-        if (src) {
-          seen.add(src);
-          const img = document.createElement("img");
-          img.alt = item.alt || caption || (portrait ? "fanfan 的照片" : "我们一起拍的照片");
-          img.loading = "lazy";
-          img.decoding = "async";
-          img.addEventListener("error", () => {
-            if (!portrait && caption) {
-              img.remove();
-              return;
-            }
-            card.remove();
-            if (!list.childElementCount) list.replaceChildren(...placeholder);
-          }, { once: true });
-          img.src = src;
-          card.append(img);
-        }
-
-        const date = entryDate(item);
-        if (caption || date) {
-          const note = document.createElement(portrait ? "figcaption" : "div");
-          note.className = "memory-caption";
-          if (date) {
-            const time = document.createElement("time");
-            time.dateTime = date;
-            time.textContent = date.split("-").join(".");
-            note.append(time);
-          }
-          if (caption) {
-            const paragraph = document.createElement("p");
-            paragraph.textContent = caption;
-            note.append(paragraph);
-          }
-          card.append(note);
-        }
-        cards.append(card);
-      }
-
-      if (cards.childElementCount) {
-        for (const node of placeholder) node.remove();
-        list.append(cards);
-      }
-    };
-  }
-
-  const albums = {
-    portraits: openAlbum("portraits", "#portrait-list"),
-    days: openAlbum("days", "#days-list"),
-  };
-  for (const [section, append] of Object.entries(albums)) append(entries[section]);
-
-  async function loadPublishedPhotos() {
-    if (!/^https?:$/.test(location.protocol)) return;
+  async function getListing() {
+    if (location.protocol === "file:") return fallback;
     try {
-      const response = await fetch("./published-photos.json", { cache: "no-cache" });
-      if (!response.ok) return;
-      const manifest = await response.json();
-      for (const [section, append] of Object.entries(albums)) {
-        if (!Array.isArray(manifest?.[section])) continue;
-        const files = manifest[section].filter(name => typeof name === "string").sort().reverse();
-        append(files.map(file => ({ file })));
+      const response = await fetch(new URL("published-photos.json", base), { cache: "no-cache" });
+      if (response.ok) {
+        const manifest = await response.json();
+        if (Array.isArray(manifest.portraits) && Array.isArray(manifest.days)) return manifest;
       }
     } catch {
-      // 直接预览静态源文件时，清单可能尚未由 GitHub Pages 生成。
+      // A plain static server can serve the unbuilt Jekyll template.
     }
+    return fallback;
   }
 
-  loadPublishedPhotos();
+  function validDate(value) {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return "";
+    const time = Date.parse(value);
+    return Number.isFinite(time) && new Date(time).toISOString().startsWith(value) ? value : "";
+  }
+
+  function record(section, note, file) {
+    const caption = typeof note.caption === "string" ? note.caption.trim() : "";
+    if (!file && (section !== "days" || !caption)) return null;
+    const parts = file.split("/");
+    const filename = parts.pop();
+    const datePrefix = /^(\d{4}-\d{2}-\d{2})(?!\d)/;
+    const nameDate = validDate(filename.match(datePrefix)?.[1]);
+    const datedFolder = parts.find(part => validDate(part.match(datePrefix)?.[1]));
+    const date = validDate(note.date) || nameDate || validDate(datedFolder?.slice(0, 10));
+    const month = date.slice(0, 7) || parts.find(part => /^\d{4}-(?:0[1-9]|1[0-2])$/.test(part)) || "";
+    const path = file.split("/").map(encodeURIComponent).join("/");
+    const item = {
+      file, caption, date, month, year: month.slice(0, 4) || parts.find(part => /^\d{4}$/.test(part)) || "",
+      alt: typeof note.alt === "string" ? note.alt : "",
+      src: file ? new URL("photos/" + section + "/" + path, base).href : ""
+    };
+    const previews = section === "days" ? window.lettersDayPreviews : window.lettersPortraitPreviews;
+    item.previewSrc = previews?.has(file)
+      ? new URL("previews/" + section + "/" + path + ".webp", base).href : item.src;
+    if (section !== "days") return item;
+    item.kind = parts.includes("美食") ? "food" : parts.includes("约会") ? "date" : "note";
+    if (item.kind === "date") {
+      // A calendar date identifies an outing even when several photos have different titles.
+      const albumFolder = parts.slice(parts.indexOf("约会") + 1)
+        .filter(part => !/^\d{4}(?:-\d{2})?$/.test(part)).pop() || "";
+      item.eventKey = date || (albumFolder ? parts.join("/") : file);
+      const outing = notes.outings?.[item.eventKey] || {};
+      const photoLabel = filename.replace(/\.[^.]+$/, "").replace(datePrefix, "").replace(/^[-_\s]+/, "");
+      item.photoTitle = /^(?:微信图片|IMG[_-]?\d|DSC[_-]?\d|\d+$)/i.test(photoLabel) ? "" : photoLabel;
+      const folderLabel = albumFolder.replace(datePrefix, "").replace(/^[-_\s]+/, "");
+      item.event = outing.title || folderLabel || item.photoTitle || "约会";
+      item.eventCaption = outing.caption || "";
+    }
+    return item;
+  }
+
+  async function load(section) {
+    if (section !== "portraits" && section !== "days") return [];
+    listing ||= getListing();
+    const files = new Set((await listing)[section].filter(validFile));
+    const records = [];
+    const consumed = new Set();
+    for (const note of notes[section] || []) {
+      if (!note || typeof note !== "object") continue;
+      let file = validFile(note.file) ? note.file : "";
+      if (file && !files.has(file)) {
+        // Keep a caption attached when its photo has moved into a category folder.
+        const basename = file.split("/").pop();
+        const matches = [...files].filter(path => path.split("/").pop() === basename);
+        if (matches.length === 1) file = matches[0];
+      }
+      if (file && consumed.has(file)) continue;
+      if (file) consumed.add(file);
+      const item = record(section, note, file);
+      if (item) records.push(item);
+    }
+    for (const file of [...files].sort().reverse()) {
+      if (!consumed.has(file)) records.push(record(section, {}, file));
+    }
+    return records;
+  }
+
+  window.lettersData = { load };
 })();

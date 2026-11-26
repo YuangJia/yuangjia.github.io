@@ -5,18 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
   <meta name="referrer" content="same-origin">
-  <meta name="theme-color" content="#fcf8f3">
+  <meta name="theme-color" content="#f8fafc">
   <title>见字如面 · 宇昂与凡凡</title>
   <link rel="stylesheet" href="letters.css">
+  <link rel="stylesheet" href="gallery.css">
+  <link rel="stylesheet" href="gallery-controls.css">
   <script src="entries.js" defer></script>
+  <script src="photo-index.js" defer></script>
+  <script src="portrait-previews.js" defer></script>
   <script src="diary.js" defer></script>
+  <script src="gallery.js" defer></script>
+  <script src="hearts.js" defer></script>
 </head>
 <body>
   <header class="mast">
     <a class="back" href="../index.html">返回博客</a>
     <nav aria-label="信中目录">
       <a href="#portraits">相册</a>
-      <a href="#days">日记</a>
+      <a href="journal/index.html">生活记录</a>
     </nav>
   </header>
   <main>
@@ -24,21 +30,22 @@
       <div class="letter">
         <p class="salutation">亲爱的凡凡，</p>
         <h1>见字如面。</h1>
-        <p class="note">把你的模样，和我们一起过的日子，慢慢收在这里。</p>
-        <p class="signature">宇昂</p>
+        <p class="note"><span>把你的模样，</span><span>和我们一起过的日子，</span><span>慢慢收在这里。</span></p>
+        <p class="signature">爱你的昂昂</p>
       </div>
     </header>
     <div class="pages">
+      <section class="journal-door" id="days" aria-labelledby="days-title">
+        <a href="journal/index.html">
+          <span class="book-spine" aria-hidden="true"></span>
+          <h2 id="days-title">我与 <i lang="en">fanfan</i> 的幸福日常</h2>
+          <span class="open-book">翻开年册</span>
+        </a>
+      </section>
       <section id="portraits" aria-labelledby="portraits-title">
         <h2 id="portraits-title"><i lang="en">fanfan</i> 的美照</h2>
         <div id="portrait-list">
-          <p class="empty">第一张照片的位置，留给你。</p>
-        </div>
-      </section>
-      <section id="days" aria-labelledby="days-title">
-        <h2 id="days-title">我与 <i lang="en">fanfan</i> 的幸福日常</h2>
-        <div id="days-list">
-          <p class="empty">等我们写下第一篇日记。</p>
+          <p class="empty">正在翻开相册…</p>
         </div>
       </section>
     </div>

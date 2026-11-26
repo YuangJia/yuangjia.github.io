@@ -1,0 +1,232 @@
+/* The gesture surface follows the artwork. The contact sheet keeps its own
+   horizontal scrolling area below the main photograph. */
+.fg-stage-shell {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  touch-action: pan-y pinch-zoom;
+}
+
+.fg-stage,
+.fg-contact .fg-main-print,
+.fg-edge,
+.fg-viewer {
+  touch-action: pan-y pinch-zoom;
+}
+
+.fg-contact .fg-stage-shell,
+.fg-contact .fg-stage,
+.fg-contact-rail {
+  touch-action: auto;
+}
+
+.fg-stage-shell .fg-edge,
+.fg-viewer .fg-edge {
+  --edge-direction: to right;
+  --edge-turn: -135deg;
+  --edge-nudge: -5px;
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: clamp(56px, 13%, 150px);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--fg-edge-ink, #fff9ed);
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fg-stage-shell .fg-next,
+.fg-viewer .fg-next {
+  --edge-direction: to left;
+  --edge-turn: 45deg;
+  --edge-nudge: 5px;
+  left: auto;
+  right: 0;
+}
+
+.fg-stage-shell .fg-edge[hidden],
+.fg-viewer .fg-edge[hidden] {
+  display: none;
+}
+
+.fg-contact .fg-edge {
+  bottom: var(--fg-proof-rail, 96px);
+}
+
+.fg-edge::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(var(--edge-direction), rgba(83, 105, 128, .44), rgba(96, 115, 138, .12) 56%, transparent);
+  opacity: .34;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+
+.fg-edge::after {
+  content: "";
+  position: relative;
+  box-sizing: border-box;
+  width: clamp(19px, 2.1vw, 32px);
+  aspect-ratio: 1;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  filter: drop-shadow(0 1px 3px var(--fg-edge-shadow, #231824b3));
+  opacity: .9;
+  transform: translateX(0) rotate(var(--edge-turn));
+  pointer-events: none;
+  transition: transform 240ms ease, opacity 200ms ease;
+}
+
+@media (hover: hover) {
+  .fg-edge:hover::before { opacity: .95; }
+  .fg-edge:hover::after {
+    opacity: 1;
+    transform: translateX(var(--edge-nudge)) rotate(var(--edge-turn));
+  }
+}
+
+.fg-stage-shell .fg-edge:focus-visible,
+.fg-viewer .fg-edge:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -5px;
+}
+
+.fg-edge:focus-visible::before { opacity: .95; }
+.fg-edge:active::after { transform: scale(.88) rotate(var(--edge-turn)); }
+
+/* The picture carries navigation; the line beneath carries its metadata. */
+.fg-title-row {
+  display:flex; align-items:center; gap:clamp(12px, 2vw, 28px);
+  margin-bottom:clamp(18px, 2.2vw, 32px);
+}
+.fg-title-row #portraits-title { flex:1; min-width:0; margin:0; }
+.fg-master {
+  flex:none; display:inline-flex; align-items:center; gap:8px; min-height:44px;
+  padding:0 12px; border:1px solid #b9c9d4; border-radius:24px;
+  background:#f2f6fa; color:#354f69; cursor:pointer; font:500 14px/1.2 system-ui,sans-serif;
+}
+.fg-master:hover { background:#e8eff7; }
+.fg-master:focus-visible { outline:2px solid #435b78; outline-offset:3px; }
+@media(max-width:440px) {
+  .fg-title-row { gap:8px; }
+  .fg-title-row #portraits-title::after { display:none; }
+  .fg-master { padding:0 9px; font-size:13px; }
+}
+.fg-info { padding-top: 4px; }
+.fg-controls { gap: clamp(12px, 2vw, 24px); min-height: 44px; }
+.fg-count, .fg-view-count {
+  font: 500 12px/1.4 Consolas, "Liberation Mono", monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .12em;
+}
+
+.fg-controls .fg-play,
+.fg-controls .fg-zoom {
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-inline-start: auto;
+  padding: 0 3px;
+  border-radius: 0;
+  font: 500 13px/1.2 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+
+.fg-controls .fg-play + .fg-zoom { margin-inline-start: 0; }
+.fg-controls .fg-key:hover, .fg-controls .fg-zoom:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  background: transparent;
+}
+
+.fg-play::before {
+  content: "";
+  box-sizing: border-box;
+  width: 9px;
+  height: 10px;
+  border-block: 5px solid transparent;
+  border-inline-start: 8px solid currentColor;
+}
+
+.fg-play.is-playing::before {
+  border: 0;
+  border-inline: 3px solid currentColor;
+}
+
+.fg-zoom::before {
+  content: "";
+  width: 13px;
+  height: 13px;
+  background: linear-gradient(currentColor, currentColor) left top / 5px 1.5px,
+              linear-gradient(currentColor, currentColor) left top / 1.5px 5px,
+              linear-gradient(currentColor, currentColor) right bottom / 5px 1.5px,
+              linear-gradient(currentColor, currentColor) right bottom / 1.5px 5px;
+  background-repeat: no-repeat;
+}
+
+.fg-viewer .fg-view-bar {
+  position: absolute;
+  z-index: 6;
+  inset: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) auto max(16px, env(safe-area-inset-left));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.fg-viewer {
+  --fg-edge-ink: #405e73;
+  --fg-edge-shadow: #fffbf1d4;
+}
+
+.fg-viewer .fg-edge::before {
+  background: linear-gradient(var(--edge-direction), #e3eff7c9, #fff1ed5c 55%, transparent);
+  opacity: .82;
+}
+
+.fg-viewer .fg-edge::after {
+  filter: drop-shadow(0 0 1px white) drop-shadow(0 1px 3px #fffbf1);
+}
+
+.fg-view-count {
+  padding: 6px 10px;
+  border-radius: 3px;
+  color: #405970;
+  background: #fff9f1de;
+}
+.fg-viewer .fg-close {
+  touch-action: manipulation;
+  position: static;
+  display: grid;
+  place-content: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid #acc1d4;
+  color: #38576f;
+  background: #f4f8f9ed;
+  font: 300 29px/1 system-ui, sans-serif;
+  pointer-events: auto;
+}
+
+@media (max-width: 680px) {
+  .fg-stage-shell .fg-edge, .fg-viewer .fg-edge { width: clamp(45px, 13%, 72px); }
+  .fg-edge::after { width: 18px; }
+  .fg-contact .fg-edge { bottom: var(--fg-proof-rail, 76px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fg-edge::before, .fg-edge::after { transition: none; }
+}
