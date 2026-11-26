@@ -1,8 +1,8 @@
 (() => {
   const pups = [
-    {id: "dingdang", name: "叮当", age: 9, sexLabel: "小公狗"},
+    {id: "dingdang", name: "叮当", age: 9, sexLabel: "哥哥"},
     {id: "chongchong", name: "虫虫", age: 1, sexLabel: "小妹妹"},
-    {id: "lele", name: "乐乐", age: 9, sexLabel: "小公狗"}
+    {id: "lele", name: "乐乐", age: 9, sexLabel: "哥哥"}
   ];
   // Current photos that also have a lightweight preview, in album order.
   const known = [
