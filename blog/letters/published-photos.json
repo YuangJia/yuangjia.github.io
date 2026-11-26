@@ -1,0 +1,24 @@
+---
+layout: null
+sitemap: false
+---
+{% assign albums = "portraits,days" | split: "," %}
+{% assign formats = ".jpg,.jpeg,.png,.gif,.webp,.avif" | split: "," %}
+{
+{% for album in albums %}
+  "{{ album }}": [
+    {% assign prefix = "/blog/letters/photos/" | append: album | append: "/" %}
+    {% assign prefix_length = prefix | size %}
+    {% assign first_photo = true %}
+    {% for photo in site.static_files %}
+      {% assign start = photo.path | slice: 0, prefix_length %}
+      {% assign extension = photo.extname | downcase %}
+      {% if start == prefix and formats contains extension %}
+        {% unless first_photo %},{% endunless %}
+        {{ photo.path | remove_first: prefix | jsonify }}
+        {% assign first_photo = false %}
+      {% endif %}
+    {% endfor %}
+  ]{% unless forloop.last %},{% endunless %}
+{% endfor %}
+}

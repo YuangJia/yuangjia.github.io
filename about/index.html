@@ -250,6 +250,18 @@
     .about-cover {
         height: 75vh;
     }
+    .letter-postscript { margin-top: 1.25rem; text-align: right; }
+    .letter-postscript a {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        min-height: 40px;
+        padding: 0 .4rem;
+        color: inherit;
+        font-size: .9rem;
+    }
+    .letter-postscript a:hover, .letter-postscript a:focus-visible { text-decoration: underline; }
+    .letter-postscript a:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 </style>
 
 <div class="bg-cover pd-header about-cover">
@@ -805,6 +817,9 @@
 
             </div>
         </div>
+    </div>
+    <div class="container letter-postscript">
+        <a href="../blog/letters/index.html" rel="nofollow"><i class="far fa-envelope" aria-hidden="true"></i>一封信</a>
     </div>
 </main>
 

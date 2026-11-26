@@ -55,6 +55,8 @@
 2. 把这个文件更新到 **GitHub Desktop 克隆仓库的 `blog/index.html`**。把生成的文章目录（例如 `2026/`）、归档、分类、标签、搜索索引及本次更新的博客资源合并到仓库对应位置。根目录的 `index.html` 继续用来维护学术首页。
 3. 在 GitHub Desktop 检查并提交这批博客改动，然后点 **Push origin**。若你的既有流程会把整个 Hexo `public/` 自动发布到同一分支，应在上传前先保存博客首页到 `public/blog/index.html`，再从学术主页的维护目录复制两份 HTML、样式与 `assets/` 到 `public/`，最后发布合并结果。[Hexo 部署说明](https://hexo.io/docs/one-command-deployment)
 
+仓库中的 `about/index.html` 和 `blog/` 下还有手工维护的页面。如果你的发布流程会替换整个站点，请在上传前把它们一起复制到发布目录；博客首页取刚生成的版本。
+
 ## 配图与版面
 
 - 北京大学校徽（`assets/pku.svg`）取自校方《基础系统》手册第 2 页的标准圆形标志，由北大 VDIG 与北大深圳研究生院两条经历共用。[北京大学标识管理办公室](https://vim.pku.edu.cn/docs/20240527144814943256.pdf)
